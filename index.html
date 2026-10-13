@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Digital Desa Sejahtera - Layanan Publik Mandiri</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header Navbar -->
+    <header class="sticky top-0 z-40 bg-emerald-700 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="p-2 bg-emerald-600 rounded-lg shadow-inner">
+                        <i data-lucide="landmark" class="w-7 h-7 text-emerald-100"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight">Desa Sejahtera</h1>
+                        <p class="text-xs text-emerald-200">Sistem Pelayanan Digital Mandiri</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links (Desktop) -->
+                <nav class="hidden xl:flex space-x-1 font-medium text-sm">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button onclick="switchTab('pajak')" id="nav-pajak" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>PBB Pajak</span>
+                    </button>
+                    <button onclick="switchTab('desil')" id="nav-desil" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Cek Desil (DTKS)</span>
+                    </button>
+                    <button onclick="switchTab('listrik')" id="nav-listrik" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span>Bayar Listrik</span>
+                    </button>
+                    <button onclick="switchTab('air')" id="nav-air" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="droplet" class="w-4 h-4"></i>
+                        <span>Air Pamsimas</span>
+                    </button>
+                    <button onclick="switchTab('bansos')" id="nav-bansos" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                        <span>Bantuan Sosial</span>
+                    </button>
+                    <button onclick="switchTab('warga')" id="nav-warga" class="nav-btn px-3 py-2 rounded-md hover:bg-emerald-600 transition flex items-center space-x-1">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        <span>Warga</span>
+                    </button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="xl:hidden">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-md hover:bg-emerald-600 focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-emerald-800 px-4 pt-2 pb-4 space-y-1 text-sm font-medium">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Dashboard</button>
+            <button onclick="switchTab('pajak'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Bayar Pajak PBB</button>
+            <button onclick="switchTab('desil'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Cek Desil DTKS</button>
+            <button onclick="switchTab('listrik'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Bayar Listrik PLN</button>
+            <button onclick="switchTab('air'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Bayar Air Pamsimas</button>
+            <button onclick="switchTab('bansos'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Data Bantuan Sosial</button>
+            <button onclick="switchTab('warga'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-emerald-700">Tambah Warga</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Toast Notification Area -->
+        <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none max-w-sm w-full bg-emerald-800 text-white p-4 rounded-xl shadow-2xl flex items-center space-x-3 border-l-4 border-emerald-400">
+            <div id="toast-icon">
+                <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>
+            </div>
+            <div class="flex-1">
+                <h4 id="toast-title" class="font-bold text-sm">Notifikasi</h4>
+                <p id="toast-message" class="text-xs text-emerald-100">Pesan sukses ditampilkan di sini.</p>
+            </div>
+        </div>
+
+        <!-- Section 1: DASHBOARD UTAMA -->
+        <section id="tab-dashboard" class="tab-content space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-emerald-800 to-teal-700 rounded-2xl shadow-xl overflow-hidden text-white p-6 md:p-10">
+                <div class="absolute -right-10 -bottom-10 opacity-10">
+                    <i data-lucide="tree-pine" class="w-96 h-96"></i>
+                </div>
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-block px-3 py-1 bg-emerald-600 bg-opacity-60 text-emerald-100 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">Selamat Datang Warga Desa</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold leading-tight mb-3">Layanan Digital Terpadu Desa Sejahtera</h2>
+                    <p class="text-emerald-100 text-sm md:text-base mb-6">Akses kemudahan cek desil kesejahteraan, pembayaran pajak PBB, tagihan air, listrik PLN, dan transparansi bansos dalam satu pintu.</p>
+                    
+                    <!-- Global Search Box -->
+                    <div class="bg-white p-2 rounded-xl shadow-lg flex items-center space-x-2 text-slate-800">
+                        <i data-lucide="search" class="w-5 h-5 text-slate-400 ml-2"></i>
+                        <input type="text" id="global-search-input" placeholder="Cari NIK (Contoh: 3201010001) atau Nama Warga..." class="w-full px-2 py-2 text-sm focus:outline-none rounded-lg" onkeyup="handleGlobalSearch(event)">
+                        <button onclick="executeGlobalSearch()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition flex items-center space-x-1 shrink-0">
+                            <span>Cari Data</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-emerald-200 mt-2">💡 Tips Coba NIK Demo: <span class="font-mono underline cursor-pointer" onclick="quickFillSearch('3201010001')">3201010001</span> (Budi), <span class="font-mono underline cursor-pointer" onclick="quickFillSearch('3201010002')">3201010002</span> (Siti), <span class="font-mono underline cursor-pointer" onclick="quickFillSearch('3201010003')">3201010003</span> (Agus)</p>
+                </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Penduduk</p>
+                        <h3 class="text-2xl font-bold text-slate-800">3,420</h3>
+                        <span class="text-xs text-emerald-600 font-medium">1,025 Kepala Keluarga</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-teal-100 text-teal-600 rounded-xl">
+                        <i data-lucide="map-pin" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Wilayah Desa</p>
+                        <h3 class="text-2xl font-bold text-slate-800">04 / 18</h3>
+                        <span class="text-xs text-slate-500">4 Dusun / 18 RT</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-sky-100 text-sky-600 rounded-xl">
+                        <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Penerima Bansos</p>
+                        <h3 class="text-2xl font-bold text-slate-800">412</h3>
+                        <span class="text-xs text-emerald-600 font-medium">DTKS Desil 1-4</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
+                        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Realisasi Pajak PBB</p>
+                        <h3 class="text-2xl font-bold text-slate-800">84.5%</h3>
+                        <span class="text-xs text-indigo-600 font-medium">Tahun Anggaran 2026</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Service Menu -->
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+                    <i data-lucide="layout-grid" class="w-5 h-5 text-emerald-600"></i>
+                    <span>Layanan Utama Desa</span>
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+                    <button onclick="switchTab('pajak')" class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-500 transition group text-left">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
+                            <i data-lucide="file-text" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">Pajak PBB</h4>
+                        <p class="text-xs text-slate-500 mt-1">Cek & bayar tagihan Pajak Bumi Bangunan</p>
+                    </button>
+
+                    <button onclick="switchTab('desil')" class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-500 transition group text-left">
+                        <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-sky-600 group-hover:text-white transition">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">Cek Desil DTKS</h4>
+                        <p class="text-xs text-slate-500 mt-1">Cek tingkat kesejahteraan keluarga</p>
+                    </button>
+
+                    <button onclick="switchTab('listrik')" class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-500 transition group text-left">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-amber-600 group-hover:text-white transition">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">Listrik PLN</h4>
+                        <p class="text-xs text-slate-500 mt-1">Beli token / bayar pascabayar PLN</p>
+                    </button>
+
+                    <button onclick="switchTab('air')" class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-500 transition group text-left">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-600 group-hover:text-white transition">
+                            <i data-lucide="droplet" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">Air Pamsimas</h4>
+                        <p class="text-xs text-slate-500 mt-1">Bayar tagihan air & cek meteran</p>
+                    </button>
+
+                    <button onclick="switchTab('bansos')" class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-500 transition group text-left">
+                        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-rose-600 group-hover:text-white transition">
+                            <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">Bantuan Sosial</h4>
+                        <p class="text-xs text-slate-500 mt-1">Transparansi bansos & usul baru</p>
+                    </button>
+
+                    <button onclick="switchTab('warga')" class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-500 transition group text-left">
+                        <div class="w-12 h-12 bg-teal-50 text-teal-700 rounded-xl flex items-center justify-center mb-3 group-hover:bg-teal-700 group-hover:text-white transition">
+                            <i data-lucide="user-plus" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">Tambah Warga</h4>
+                        <p class="text-xs text-slate-500 mt-1">Daftarkan warga baru ke data desa</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Search Result Container -->
+            <div id="dashboard-search-result" class="hidden bg-white p-6 rounded-2xl shadow-md border border-emerald-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="user-check" class="w-5 h-5 text-emerald-600"></i>
+                        <span>Hasil Pencarian Warga</span>
+                    </h3>
+                    <button onclick="closeSearchResult()" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="search-result-content"></div>
+            </div>
+
+            <!-- Announcements & News -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center space-x-2">
+                        <i data-lucide="bell" class="w-5 h-5 text-emerald-600"></i>
+                        <span>Pengumuman Desa Terbaru</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-emerald-500 pl-3 py-1">
+                            <span class="text-xs text-slate-400">10 Oktober 2026</span>
+                            <h4 class="font-semibold text-sm text-slate-800">Jadwal Penyaluran BLT Dana Desa Tahap III</h4>
+                            <p class="text-xs text-slate-600">Penyaluran BLT dilaksanakan di Balai Desa mulai hari Kamis jam 08.00 WIB bagi warga Desil 1 & 2.</p>
+                        </div>
+                        <div class="border-l-4 border-amber-500 pl-3 py-1">
+                            <span class="text-xs text-slate-400">05 Oktober 2026</span>
+                            <h4 class="font-semibold text-sm text-slate-800">Penting: Pemutakhiran Data Tagihan PBB 2026</h4>
+                            <p class="text-xs text-slate-600">Jatuh tempo pembayaran PBB Tanpa Denda hingga tanggal 30 November 2026. Lakukan pembayaran online lewat portal ini.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center space-x-2">
+                        <i data-lucide="help-circle" class="w-5 h-5 text-emerald-600"></i>
+                        <span>Panduan Penggunaan Portal</span>
+                    </h3>
+                    <ul class="text-xs text-slate-600 space-y-2.5">
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>
+                            <span>Masukkan NIK Anda pada kolom pencarian di atas untuk melihat seluruh data tagihan & status bantuan.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>
+                            <span>Lakukan pembayaran tagihan menggunakan simulasi QRIS, Transfer Bank, atau E-Wallet.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>
+                            <span>Bukti / Struk resmi dapat langsung diunduh atau dicetak dalam format digital.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: BAYAR PAJAK PBB -->
+        <section id="tab-pajak" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                            <i data-lucide="file-text" class="w-6 h-6 text-emerald-600"></i>
+                            <span>Pembayaran Pajak Bumi dan Bangunan (PBB)</span>
+                        </h2>
+                        <p class="text-xs text-slate-500">Cek rincian NOP (Nomor Objek Pajak) dan lunasi PBB secara cepat</p>
+                    </div>
+                </div>
+
+                <!-- Search NOP / NIK Form -->
+                <div class="max-w-xl bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Masukkan NOP atau NIK Pemilik</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="pbb-search-input" placeholder="Contoh NOP: 32.01.001.002.003-0" class="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <button onclick="searchPBB()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            <span>Cari PBB</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Atau masukkan NIK demo: 3201010001 / 3201010002</p>
+                </div>
+
+                <!-- PBB Result Container -->
+                <div id="pbb-result" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Object Info -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-sm text-slate-700 mb-3 border-b pb-2">Rincian Objek Pajak</h3>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between"><span class="text-slate-500">NOP:</span><span id="pbb-nop" class="font-mono font-bold"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Nama Wajib Pajak:</span><span id="pbb-nama" class="font-semibold"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Alamat Objek:</span><span id="pbb-alamat"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Luas Bumi / Bangunan:</span><span id="pbb-luas"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">NJOP Total:</span><span id="pbb-njop" class="font-semibold"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- Bill Calculation -->
+                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+                            <h3 class="font-bold text-sm text-emerald-800 mb-3 border-b border-emerald-200 pb-2">Rincian Tagihan Tahun 2026</h3>
+                            <div class="space-y-2 text-xs text-slate-700">
+                                <div class="flex justify-between"><span class="text-slate-600">PBB Pokok:</span><span id="pbb-pokok" class="font-semibold"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-600">Denda Keterlambatan:</span><span id="pbb-denda" class="text-rose-600 font-semibold">Rp 0</span></div>
+                                <div class="flex justify-between"><span class="text-slate-600">Biaya Administrasi:</span><span class="text-emerald-700 font-semibold">Gratis (Subsidi Desa)</span></div>
+                                <div class="border-t border-emerald-200 pt-2 flex justify-between text-sm font-bold text-slate-900">
+                                    <span>Total Bayar:</span>
+                                    <span id="pbb-total" class="text-emerald-700 text-lg"></span>
+                                </div>
+                                <div class="pt-2">
+                                    <span id="pbb-status-badge" class="px-2.5 py-1 rounded-full text-xs font-bold inline-block"></span>
+                                </div>
+                            </div>
+
+                            <div class="mt-5" id="pbb-action-area">
+                                <button onclick="openPaymentModal('PBB', getPBBTotalAmount())" id="btn-pay-pbb" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-bold text-sm shadow transition flex justify-center items-center space-x-2">
+                                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                                    <span>Bayar PBB Sekarang</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: CEK DESIL DTKS -->
+        <section id="tab-desil" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="users" class="w-6 h-6 text-sky-600"></i>
+                        <span>Pengecekan Tingkat Kesejahteraan (Desil DTKS)</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Cek status Tingkat Kesejahteraan Sosial (Desil 1 s/d 10) berdasarkan Data Terpadu Kesejahteraan Sosial Kemensos</p>
+                </div>
+
+                <!-- Form Search Desil -->
+                <div class="max-w-xl bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Cek Berdasarkan NIK / Nama Warga</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="desil-search-input" placeholder="Masukkan 16 Digit NIK..." class="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        <button onclick="searchDesil()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            <span>Cek Desil</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Desil Result Container -->
+                <div id="desil-result" class="hidden space-y-6">
+                    <div class="bg-gradient-to-r from-sky-50 to-indigo-50 p-6 rounded-2xl border border-sky-200">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-sky-700">Hasil Verifikasi DTKS Desa</span>
+                                <h3 id="desil-nama" class="text-2xl font-bold text-slate-800"></h3>
+                                <p id="desil-nik" class="text-xs font-mono text-slate-500"></p>
+                            </div>
+                            <div class="mt-3 md:mt-0 px-4 py-2 bg-white rounded-xl shadow-sm border border-sky-100 flex items-center space-x-3">
+                                <span class="text-xs font-semibold text-slate-600">Status Tingkat:</span>
+                                <span id="desil-tag" class="text-xl font-extrabold text-sky-600"></span>
+                            </div>
+                        </div>
+
+                        <!-- Visual Meter Desil 1-10 -->
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-slate-600 mb-2">Visualisasi Tingkat Desil (1 = Sangat Miskin, 10 = Mampu):</label>
+                            <div class="grid grid-cols-10 gap-1.5 bg-white p-2 rounded-xl border border-slate-200">
+                                <div id="d-meter-1" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">1</div>
+                                <div id="d-meter-2" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">2</div>
+                                <div id="d-meter-3" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">3</div>
+                                <div id="d-meter-4" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">4</div>
+                                <div id="d-meter-5" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">5</div>
+                                <div id="d-meter-6" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">6</div>
+                                <div id="d-meter-7" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">7</div>
+                                <div id="d-meter-8" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">8</div>
+                                <div id="d-meter-9" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">9</div>
+                                <div id="d-meter-10" class="h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400">10</div>
+                            </div>
+                        </div>
+
+                        <!-- Kelayakan Bansos -->
+                        <div class="bg-white p-5 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-sm text-slate-800 mb-2 flex items-center space-x-2">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                                <span>Keterangan Kelayakan Program Bantuan:</span>
+                            </h4>
+                            <p id="desil-kategori-desc" class="text-xs text-slate-600 mb-3"></p>
+                            <div id="desil-bansos-eligibility" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Box -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-red-50 rounded-xl border border-red-100">
+                        <span class="font-bold text-red-700 text-xs uppercase">Desil 1 - 2</span>
+                        <h4 class="font-bold text-slate-800 text-sm">Sangat Miskin / Miskin</h4>
+                        <p class="text-xs text-slate-600 mt-1">Berhak menerima seluruh program bantuan sosial pemerintah (PKH, BPNT, BLT Desa, KIS PBI).</p>
+                    </div>
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                        <span class="font-bold text-amber-700 text-xs uppercase">Desil 3 - 4</span>
+                        <h4 class="font-bold text-slate-800 text-sm">Hampir Miskin / Rentan</h4>
+                        <p class="text-xs text-slate-600 mt-1">Berhak menerima sebagian bantuan sosial kompensasi dan bantuan modal usaha kelompok.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <span class="font-bold text-emerald-700 text-xs uppercase">Desil 5 - 10</span>
+                        <h4 class="font-bold text-slate-800 text-sm">Menengah / Mampu</h4>
+                        <p class="text-xs text-slate-600 mt-1">Kategori keluarga sejahtera dan mandiri secara ekonomi, tidak masuk kuota prioritas bansos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: BAYAR LISTRIK PLN -->
+        <section id="tab-listrik" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="zap" class="w-6 h-6 text-amber-500"></i>
+                        <span>Layanan Listrik PLN Desa</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Beli Token Listrik (Pra Bayar) atau Bayar Tagihan Listrik Bulanan (Pasca Bayar)</p>
+                </div>
+
+                <!-- Electricity Type Toggle -->
+                <div class="flex space-x-3 mb-6">
+                    <button onclick="setListrikType('token')" id="btn-type-token" class="px-4 py-2 rounded-xl text-sm font-bold border-2 border-amber-500 bg-amber-50 text-amber-800 flex items-center space-x-2">
+                        <i data-lucide="key-round" class="w-4 h-4"></i>
+                        <span>Token / Pra Bayar</span>
+                    </button>
+                    <button onclick="setListrikType('pascabayar')" id="btn-type-pasca" class="px-4 py-2 rounded-xl text-sm font-bold border-2 border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center space-x-2">
+                        <i data-lucide="receipt" class="w-4 h-4"></i>
+                        <span>Tagihan Pasca Bayar</span>
+                    </button>
+                </div>
+
+                <!-- Input ID Pelanggan -->
+                <div class="max-w-xl bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">ID Pelanggan PLN / Nomor Meter</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="listrik-id-input" placeholder="Masukkan 11-12 Digit ID Pelanggan..." class="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <button onclick="checkListrikID()" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            <span>Cek ID</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Atau gunakan NIK demo: 3201010001 / 3201010002</p>
+                </div>
+
+                <!-- Listrik Result Container -->
+                <div id="listrik-result" class="hidden space-y-6">
+                    <div class="bg-amber-50/50 p-5 rounded-xl border border-amber-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-4">
+                            <div><span class="text-slate-500">ID Pelanggan:</span> <strong id="pln-id-display" class="font-mono"></strong></div>
+                            <div><span class="text-slate-500">Nama Pelanggan:</span> <strong id="pln-nama-display"></strong></div>
+                            <div><span class="text-slate-500">Tarif / Daya:</span> <strong id="pln-daya-display">R1M / 900 VA</strong></div>
+                            <div><span class="text-slate-500">Tipe Layanan:</span> <strong id="pln-tipe-display" class="uppercase"></strong></div>
+                        </div>
+
+                        <!-- TOKEN SELECTION MODE -->
+                        <div id="listrik-token-section" class="space-y-4">
+                            <h4 class="font-bold text-sm text-slate-800">Pilih Nominal Token Listrik:</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <button onclick="selectTokenDenom(20000)" class="denom-btn p-3 bg-white border border-slate-200 rounded-xl hover:border-amber-500 font-bold text-slate-800 text-center">Rp 20.000</button>
+                                <button onclick="selectTokenDenom(50000)" class="denom-btn p-3 bg-white border border-slate-200 rounded-xl hover:border-amber-500 font-bold text-slate-800 text-center">Rp 50.000</button>
+                                <button onclick="selectTokenDenom(100000)" class="denom-btn p-3 bg-white border border-slate-200 rounded-xl hover:border-amber-500 font-bold text-slate-800 text-center">Rp 100.000</button>
+                                <button onclick="selectTokenDenom(200000)" class="denom-btn p-3 bg-white border border-slate-200 rounded-xl hover:border-amber-500 font-bold text-slate-800 text-center">Rp 200.000</button>
+                            </div>
+                        </div>
+
+                        <!-- PASCABAYAR BILL MODE -->
+                        <div id="listrik-pasca-section" class="hidden space-y-3">
+                            <div class="flex justify-between text-sm py-2 border-t border-b border-amber-200">
+                                <span class="text-slate-600">Tagihan Bulan Oktober 2026:</span>
+                                <span id="pln-tagihan-amount" class="font-bold text-amber-700">Rp 145.000</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <button onclick="processListrikPayment()" id="btn-pay-listrik" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl font-bold shadow text-sm transition">
+                                Lanjutkan Pembayaran Listrik
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: BAYAR AIR PAMSIMAS -->
+        <section id="tab-air" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="droplet" class="w-6 h-6 text-blue-600"></i>
+                        <span>Pembayaran Air Pamsimas / PDAM Desa</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Kelola dan lunasi tagihan penggunaan air bersih desa mandiri</p>
+                </div>
+
+                <!-- Form Search ID Air -->
+                <div class="max-w-xl bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">ID Pelanggan Air / NIK</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="air-id-input" placeholder="Contoh ID: PAM-001" class="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <button onclick="checkAirID()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            <span>Cek Tagihan</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Gunakan NIK demo: 3201010001 / 3201010002</p>
+                </div>
+
+                <!-- Air Result Container -->
+                <div id="air-result" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Meter Usage Detail -->
+                        <div class="bg-blue-50/40 p-5 rounded-xl border border-blue-200">
+                            <h3 class="font-bold text-sm text-blue-900 mb-3 border-b border-blue-200 pb-2">Detail Meteran Air Bulan Ini</h3>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between"><span class="text-slate-500">ID Pelanggan:</span><span id="air-id-display" class="font-mono font-bold"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Nama Pelanggan:</span><span id="air-nama-display" class="font-semibold"></span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Meter Awal:</span><span id="air-meter-awal">120 m³</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Meter Akhir:</span><span id="air-meter-akhir">142 m³</span></div>
+                                <div class="flex justify-between font-bold text-blue-700 pt-1 border-t border-blue-100">
+                                    <span>Total Pemakaian:</span>
+                                    <span id="air-pemakaian">22 m³</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bill Summary -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2">Rincian Biaya Air</h3>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between"><span class="text-slate-500">Tarif per m³:</span><span>Rp 2.500</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Biaya Pemakaian Air:</span><span id="air-biaya-pakai">Rp 55.000</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Biaya Pemeliharaan Meter:</span><span>Rp 5.000</span></div>
+                                    <div class="flex justify-between font-bold text-base text-slate-900 pt-2 border-t">
+                                        <span>Total Tagihan:</span>
+                                        <span id="air-total-tagihan" class="text-blue-600">Rp 60.000</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button onclick="openPaymentModal('Air Pamsimas', getAirTotalAmount())" id="btn-pay-air" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-bold text-sm transition">
+                                    Bayar Tagihan Air
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: BANTUAN SOSIAL (BANSOS) -->
+        <section id="tab-bansos" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="heart-handshake" class="w-6 h-6 text-rose-600"></i>
+                        <span>Transparansi Data Bantuan Sosial (Bansos Desa)</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Laporan transparansi alokasi bansos PKH, BPNT, BLT Desa, dan Form pengajuan usulan baru</p>
+                </div>
+
+                <!-- Navigation Sub-tabs for Bansos -->
+                <div class="flex space-x-2 border-b border-slate-200 pb-3 mb-6">
+                    <button onclick="switchBansosSubTab('daftar')" id="sub-bansos-daftar" class="sub-tab-btn font-bold text-sm text-emerald-700 border-b-2 border-emerald-700 pb-1 px-3">Daftar Penerima</button>
+                    <button onclick="switchBansosSubTab('statistik')" id="sub-bansos-statistik" class="sub-tab-btn text-sm text-slate-500 hover:text-slate-800 pb-1 px-3">Grafik & Stat Transparansi</button>
+                    <button onclick="switchBansosSubTab('pengajuan')" id="sub-bansos-pengajuan" class="sub-tab-btn text-sm text-slate-500 hover:text-slate-800 pb-1 px-3">Form Pengajuan Usulan</button>
+                </div>
+
+                <!-- SUB TAB 1: DAFTAR PENERIMA BANSOS -->
+                <div id="bansos-sub-daftar" class="space-y-4">
+                    <div class="flex flex-col md:flex-row gap-3 justify-between items-center bg-slate-50 p-4 rounded-xl">
+                        <div class="w-full md:w-1/2 flex items-center space-x-2 bg-white px-3 py-2 rounded-lg border border-slate-200">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                            <input type="text" id="bansos-filter-input" placeholder="Cari nama penerima atau NIK..." onkeyup="filterBansosTable()" class="w-full text-xs focus:outline-none">
+                        </div>
+                        <div class="w-full md:w-auto flex space-x-2">
+                            <select id="bansos-filter-jenis" onchange="filterBansosTable()" class="text-xs border rounded-lg px-3 py-2 focus:outline-none">
+                                <option value="">Semua Bantuan</option>
+                                <option value="BLT Desa">BLT Desa</option>
+                                <option value="PKH">PKH</option>
+                                <option value="BPNT">BPNT</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table List -->
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left text-xs text-slate-700">
+                            <thead class="bg-slate-100 text-slate-800 font-bold uppercase text-[10px] tracking-wider border-b">
+                                <tr>
+                                    <th class="p-3">Nama KPM</th>
+                                    <th class="p-3">NIK</th>
+                                    <th class="p-3">RT / RW</th>
+                                    <th class="p-3">Jenis Bantuan</th>
+                                    <th class="p-3">Desil</th>
+                                    <th class="p-3">Status Penyaluran</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bansos-table-body" class="divide-y divide-slate-100">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SUB TAB 2: GRAFIK & STATISTIK -->
+                <div id="bansos-sub-statistik" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-xs text-slate-700 mb-3">Distribusi Program Bantuan Desa</h4>
+                            <div class="h-64">
+                                <canvas id="chartBansosJenis"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-xs text-slate-700 mb-3">Proporsi Penerima Berdasarkan Desil</h4>
+                            <div class="h-64">
+                                <canvas id="chartBansosDesil"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB TAB 3: FORM PENGAJUAN USULAN BARU -->
+                <div id="bansos-sub-pengajuan" class="hidden max-w-2xl bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-base mb-1">Formulir Pengajuan Usulan Bansos Mandiri</h3>
+                    <p class="text-xs text-slate-500 mb-4">Jika Anda merasa layak menerima bantuan sosial, silakan isi data lengkap di bawah ini untuk diverifikasi oleh Petugas Lapangan Desa.</p>
+                    
+                    <form onsubmit="submitPengajuanBansos(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">NIK (Nomor Induk Kependudukan)</label>
+                            <input type="text" required placeholder="16 Digit NIK" class="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap Kepala Keluarga</label>
+                            <input type="text" required placeholder="Sesuai KTP" class="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">RT / RW</label>
+                                <input type="text" required placeholder="001 / 002" class="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Jenis Bantuan Diusulkan</label>
+                                <select required class="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                    <option value="BLT Desa">BLT Dana Desa</option>
+                                    <option value="PKH">Program Keluarga Harapan (PKH)</option>
+                                    <option value="BPNT">Bantuan Sembako (BPNT)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Alasan Pengajuan / Kondisi Ekonomi</label>
+                            <textarea rows="3" required placeholder="Jelaskan secara singkat kondisi pekerjaan, pendapatan, dan alasan kelayakan..." class="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs transition">
+                            Kirim Usulan Bantuan
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PAYMENT MODAL -->
+    <div id="payment-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
+            <!-- Modal Header -->
+            <div class="bg-emerald-700 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center space-x-2">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    <span>Konfirmasi Pembayaran Online</span>
+                </h3>
+                <button onclick="closePaymentModal()" class="text-emerald-200 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <span class="text-xs text-slate-500">Layanan:</span>
+                    <h4 id="modal-service-title" class="font-bold text-slate-800 text-sm">Pajak PBB 2026</h4>
+                    <div class="mt-2 text-xl font-extrabold text-emerald-700" id="modal-service-amount">Rp 150.000</div>
+                </div>
+
+                <!-- Payment Method Select -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Pilih Metode Pembayaran:</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                            <input type="radio" name="pay-method" value="QRIS" checked class="text-emerald-600 focus:ring-emerald-500">
+                            <div class="ml-3 flex items-center justify-between w-full">
+                                <span class="text-xs font-semibold text-slate-800">QRIS Instant (Semua E-Wallet)</span>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Bebas Biaya</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                            <input type="radio" name="pay-method" value="Bank Transfer" class="text-emerald-600 focus:ring-emerald-500">
+                            <div class="ml-3 flex items-center justify-between w-full">
+                                <span class="text-xs font-semibold text-slate-800">Virtual Account / Transfer Bank</span>
+                                <span class="text-[10px] text-slate-400">BRI / Bank Jateng</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button onclick="executeSimulatedPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm shadow transition">
+                        Bayar Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIGITAL RECEIPT / BUKTI PEMBAYARAN MODAL -->
+    <div id="receipt-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100 relative">
+            <div id="receipt-printable" class="p-6 space-y-4">
+                <div class="text-center border-b pb-4">
+                    <div class="inline-block p-2 bg-emerald-100 text-emerald-700 rounded-full mb-2">
+                        <i data-lucide="check" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-800 text-lg">PEMBAYARAN BERHASIL</h3>
+                    <p class="text-xs text-slate-500">Bukti Pembayaran Digital Desa Sejahtera</p>
+                </div>
+
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between"><span class="text-slate-500">No. Transaksi:</span><span id="rec-no" class="font-mono font-bold"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Waktu Pembayaran:</span><span id="rec-time"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Jenis Layanan:</span><span id="rec-service" class="font-bold"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Nama Pelanggan / Warga:</span><span id="rec-nama"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Metode Bayar:</span><span id="rec-method"></span></div>
+                    <div id="rec-token-row" class="hidden flex justify-between bg-amber-50 p-2 rounded border border-amber-200 text-amber-900 font-mono font-bold my-2">
+                        <span>TOKEN PLN:</span>
+                        <span id="rec-token-val"></span>
+                    </div>
+                    <div class="border-t pt-2 flex justify-between text-sm font-extrabold text-slate-900">
+                        <span>Total Lunas:</span>
+                        <span id="rec-total" class="text-emerald-700"></span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded-lg text-[10px] text-slate-500 text-center">
+                    Simpan resi digital ini sebagai bukti sah pembayaran pelayanan umum Desa Sejahtera.
+                </div>
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div class="p-4 bg-slate-50 border-t flex space-x-2 no-print">
+                <button onclick="window.print()" class="flex-1 bg-slate-700 hover:bg-slate-800 text-white py-2 rounded-xl text-xs font-bold transition flex justify-center items-center space-x-1">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>Cetak / Unduh PDF</span>
+                </button>
+                <button onclick="closeReceiptModal()" class="px-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition">
+                    Selesai
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>&copy; 2026 Pemerintah Desa Sejahtera - Sistem Informasi & Pelayanan Publik Mandiri.</p>
+            <p class="text-slate-500">Mewujudkan Desa Digital Transparan, Akuntabel, dan Sejahtera.</p>
+        </div>
+    </footer>
+
+    <!-- Application Logic Javascript -->
+    <script>
+        // Mock Citizens Database
+        const citizensData = [
+            {
+                nik: "3201010001",
+                nama: "Budi Santoso",
+                rt: "001",
+                rw: "002",
+                alamat: "Dusun Krajan RT 01 / RW 02",
+                desil: 1,
+                kategoriDesil: "Sangat Miskin",
+                pbb: { nop: "32.01.001.002.001-0", pokok: 120000, denda: 0, status: "Belum Bayar", luas: "120m² / 45m²", njop: "Rp 150.000.000" },
+                pln: { id: "534100998811", tipe: "token", daya: "450 VA" },
+                air: { id: "PAM-001", meterAwal: 100, meterAkhir: 118, pemakaian: 18, total: 50000, status: "Belum Bayar" },
+                bansos: { jenis: "BLT Desa", status: "Telah Disalurkan (Tahap 3)" }
+            },
+            {
+                nik: "3201010002",
+                nama: "Siti Aminah",
+                rt: "002",
+                rw: "002",
+                alamat: "Dusun Krajan RT 02 / RW 02",
+                desil: 2,
+                kategoriDesil: "Miskin",
+                pbb: { nop: "32.01.001.002.002-0", pokok: 95000, denda: 0, status: "Lunas", luas: "90m² / 36m²", njop: "Rp 110.000.000" },
+                pln: { id: "534100998812", tipe: "pascabayar", daya: "900 VA", tagihan: 85000, status: "Belum Bayar" },
+                air: { id: "PAM-002", meterAwal: 210, meterAkhir: 235, pemakaian: 25, total: 67500, status: "Belum Bayar" },
+                bansos: { jenis: "PKH", status: "Telah Disalurkan (Tahap 3)" }
+            },
+            {
+                nik: "3201010003",
+                nama: "Agus Prasetyo",
+                rt: "003",
+                rw: "001",
+                alamat: "Dusun Melati RT 03 / RW 01",
+                desil: 5,
+                kategoriDesil: "Menengah",
+                pbb: { nop: "32.01.001.001.003-0", pokok: 250000, denda: 15000, status: "Belum Bayar", luas: "200m² / 100m²", njop: "Rp 320.000.000" },
+                pln: { id: "534100998813", tipe: "pascabayar", daya: "1300 VA", tagihan: 210000, status: "Belum Bayar" },
+                air: { id: "PAM-003", meterAwal: 300, meterAkhir: 330, pemakaian: 30, total: 80000, status: "Belum Bayar" },
+                bansos: { jenis: "-", status: "Tidak Menerima" }
+            }
+        ];
+
+        // Active State Variables
+        let currentPbbData = null;
+        let currentAirData = null;
+        let currentPlnData = null;
+        let selectedTokenDenom = 50000;
+        let activeListrikType = 'token';
+        let currentPaymentTarget = null; // { type, amount, name }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            populateBansosTable();
+            initBansosCharts();
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Reset navbar styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'font-bold');
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) activeNav.classList.add('bg-emerald-600', 'font-bold');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Toast Notification System
+        function showToast(title, message, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // Global Search Logic
+        function quickFillSearch(nik) {
+            document.getElementById('global-search-input').value = nik;
+            executeGlobalSearch();
+        }
+
+        function handleGlobalSearch(e) {
+            if (e.key === 'Enter') executeGlobalSearch();
+        }
+
+        function executeGlobalSearch() {
+            const query = document.getElementById('global-search-input').value.trim().toLowerCase();
+            const resultBox = document.getElementById('dashboard-search-result');
+            const contentBox = document.getElementById('search-result-content');
+
+            if (!query) {
+                showToast("Peringatan", "Masukkan NIK atau Nama warga untuk mencari data", false);
+                return;
+            }
+
+            const citizen = citizensData.find(c => c.nik === query || c.nama.toLowerCase().includes(query));
+
+            if (citizen) {
+                contentBox.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-xl">
+                            <h4 class="font-bold text-sm text-slate-800">${citizen.nama}</h4>
+                            <p class="text-xs text-slate-500">NIK: ${citizen.nik}</p>
+                            <p class="text-xs text-slate-500">${citizen.alamat}</p>
+                            <span class="inline-block mt-2 text-xs px-2.5 py-1 rounded-full font-bold ${citizen.desil <= 2 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">
+                                Desil DTKS: ${citizen.desil} (${citizen.kategoriDesil})
+                            </span>
+                        </div>
+                        <div class="p-4 bg-emerald-50 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs text-slate-500">Status Pajak PBB:</span>
+                                <h5 class="font-bold text-slate-800 text-sm">Rp ${citizen.pbb.pokok.toLocaleString()}</h5>
+                                <span class="text-xs ${citizen.pbb.status === 'Lunas' ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'}">${citizen.pbb.status}</span>
+                            </div>
+                            <button onclick="switchTab('pajak'); document.getElementById('pbb-search-input').value='${citizen.nik}'; searchPBB();" class="mt-2 text-xs font-bold text-emerald-700 hover:underline text-left">Kelola PBB &rarr;</button>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs text-slate-500">Status Air Pamsimas:</span>
+                                <h5 class="font-bold text-slate-800 text-sm">Rp ${citizen.air.total.toLocaleString()}</h5>
+                                <span class="text-xs text-blue-600 font-bold">${citizen.air.status}</span>
+                            </div>
+                            <button onclick="switchTab('air'); document.getElementById('air-id-input').value='${citizen.nik}'; checkAirID();" class="mt-2 text-xs font-bold text-blue-700 hover:underline text-left">Bayar Air &rarr;</button>
+                        </div>
+                    </div>
+                `;
+                resultBox.classList.remove('hidden');
+            } else {
+                contentBox.innerHTML = `<p class="text-xs text-slate-500">Data warga tidak ditemukan. Coba NIK demo: 3201010001</p>`;
+                resultBox.classList.remove('hidden');
+            }
+        }
+
+        function closeSearchResult() {
+            document.getElementById('dashboard-search-result').classList.add('hidden');
+        }
+
+        // --- FEATURE 2: PAJAK PBB ---
+        function searchPBB() {
+            const query = document.getElementById('pbb-search-input').value.trim();
+            const resultBox = document.getElementById('pbb-result');
+
+            const citizen = citizensData.find(c => c.nik === query || c.pbb.nop === query);
+
+            if (citizen) {
+                currentPbbData = citizen;
+                document.getElementById('pbb-nop').innerText = citizen.pbb.nop;
+                document.getElementById('pbb-nama').innerText = citizen.nama;
+                document.getElementById('pbb-alamat').innerText = citizen.alamat;
+                document.getElementById('pbb-luas').innerText = citizen.pbb.luas;
+                document.getElementById('pbb-njop').innerText = citizen.pbb.njop;
+
+                document.getElementById('pbb-pokok').innerText = `Rp ${citizen.pbb.pokok.toLocaleString()}`;
+                document.getElementById('pbb-denda').innerText = `Rp ${citizen.pbb.denda.toLocaleString()}`;
+                
+                const total = citizen.pbb.pokok + citizen.pbb.denda;
+                document.getElementById('pbb-total').innerText = `Rp ${total.toLocaleString()}`;
+
+                const badge = document.getElementById('pbb-status-badge');
+                const btnPay = document.getElementById('btn-pay-pbb');
+
+                if (citizen.pbb.status === 'Lunas') {
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                    badge.innerText = 'STATUS: LUNAS';
+                    btnPay.classList.add('hidden');
+                } else {
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800';
+                    badge.innerText = 'STATUS: BELUM DIBAYAR';
+                    btnPay.classList.remove('hidden');
+                }
+
+                resultBox.classList.remove('hidden');
+            } else {
+                showToast("PBB Tidak Ditemukan", "Data NOP / NIK tidak terdaftar dalam database PBB", false);
+            }
+        }
+
+        function getPBBTotalAmount() {
+            return currentPbbData ? currentPbbData.pbb.pokok + currentPbbData.pbb.denda : 0;
+        }
+
+        // --- FEATURE 3: CEK DESIL DTKS ---
+        function searchDesil() {
+            const query = document.getElementById('desil-search-input').value.trim();
+            const resultBox = document.getElementById('desil-result');
+
+            const citizen = citizensData.find(c => c.nik === query || c.nama.toLowerCase().includes(query.toLowerCase()));
+
+            if (citizen) {
+                document.getElementById('desil-nama').innerText = citizen.nama;
+                document.getElementById('desil-nik').innerText = `NIK: ${citizen.nik} | ${citizen.alamat}`;
+                document.getElementById('desil-tag').innerText = `DESIL ${citizen.desil}`;
+
+                // Update meters
+                for (let i = 1; i <= 10; i++) {
+                    const meterEl = document.getElementById(`d-meter-${i}`);
+                    if (i === citizen.desil) {
+                        meterEl.className = 'h-8 rounded flex items-center justify-center text-xs font-bold bg-sky-600 text-white shadow-md transform scale-105';
+                    } else {
+                        meterEl.className = 'h-8 rounded flex items-center justify-center text-xs font-bold bg-slate-100 text-slate-400';
+                    }
+                }
+
+                const desc = document.getElementById('desil-kategori-desc');
+                const eligibility = document.getElementById('desil-bansos-eligibility');
+                eligibility.innerHTML = '';
+
+                if (citizen.desil <= 2) {
+                    desc.innerText = "Keluarga berada dalam kategori Prioritas Utama Penerima Bantuan Sosial Nasional & Desa.";
+                    eligibility.innerHTML = `
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-md font-bold text-xs">Eligible PKH</span>
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-md font-bold text-xs">Eligible BPNT</span>
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-md font-bold text-xs">Eligible BLT Desa</span>
+                    `;
+                } else if (citizen.desil <= 4) {
+                    desc.innerText = "Keluarga berada dalam kelompok Rentan Kesejahteraan, berhak menerima bantuan kompensasi bersyarat.";
+                    eligibility.innerHTML = `
+                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-md font-bold text-xs">Eligible Bantuan Modal Usaha</span>
+                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-md font-bold text-xs">Eligible KIS PBI</span>
+                    `;
+                } else {
+                    desc.innerText = "Keluarga tergolong Sejahtera / Mampu. Tidak masuk dalam alokasi prioritas bantuan sosial regular.";
+                    eligibility.innerHTML = `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md font-bold text-xs">Kategori Mandiri (Non-Bansos)</span>`;
+                }
+
+                resultBox.classList.remove('hidden');
+            } else {
+                showToast("Data Tidak Ditemukan", "NIK atau Nama Warga tidak terdaftar pada database DTKS", false);
+            }
+        }
+
+        // --- FEATURE 4: LISTRIK PLN ---
+        function setListrikType(type) {
+            activeListrikType = type;
+            const btnToken = document.getElementById('btn-type-token');
+            const btnPasca = document.getElementById('btn-type-pasca');
+
+            if (type === 'token') {
+                btnToken.className = 'px-4 py-2 rounded-xl text-sm font-bold border-2 border-amber-500 bg-amber-50 text-amber-800 flex items-center space-x-2';
+                btnPasca.className = 'px-4 py-2 rounded-xl text-sm font-bold border-2 border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center space-x-2';
+            } else {
+                btnPasca.className = 'px-4 py-2 rounded-xl text-sm font-bold border-2 border-amber-500 bg-amber-50 text-amber-800 flex items-center space-x-2';
+                btnToken.className = 'px-4 py-2 rounded-xl text-sm font-bold border-2 border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center space-x-2';
+            }
+        }
+
+        function checkListrikID() {
+            const query = document.getElementById('listrik-id-input').value.trim();
+            const citizen = citizensData.find(c => c.nik === query || c.pln.id === query);
+
+            if (citizen) {
+                currentPlnData = citizen;
+                document.getElementById('pln-id-display').innerText = citizen.pln.id;
+                document.getElementById('pln-nama-display').innerText = citizen.nama;
+                document.getElementById('pln-tipe-display').innerText = activeListrikType;
+
+                const tokenSec = document.getElementById('listrik-token-section');
+                const pascaSec = document.getElementById('listrik-pasca-section');
+
+                if (activeListrikType === 'token') {
+                    tokenSec.classList.remove('hidden');
+                    pascaSec.classList.add('hidden');
+                } else {
+                    tokenSec.classList.add('hidden');
+                    pascaSec.classList.remove('hidden');
+                    document.getElementById('pln-tagihan-amount').innerText = `Rp ${(citizen.pln.tagihan || 125000).toLocaleString()}`;
+                }
+
+                document.getElementById('listrik-result').classList.remove('hidden');
+            } else {
+                showToast("PLN ID Tidak Ditemukan", "Gunakan NIK Demo 3201010001", false);
+            }
+        }
+
+        function selectTokenDenom(amount) {
+            selectedTokenDenom = amount;
+            showToast("Nominal Dipilih", `Token PLN Rp ${amount.toLocaleString()}`);
+        }
+
+        function processListrikPayment() {
+            const amount = activeListrikType === 'token' ? selectedTokenDenom : (currentPlnData.pln.tagihan || 125000);
+            openPaymentModal(`PLN Listrik (${activeListrikType.toUpperCase()})`, amount);
+        }
+
+        // --- FEATURE 5: AIR PAMSIMAS ---
+        function checkAirID() {
+            const query = document.getElementById('air-id-input').value.trim();
+            const citizen = citizensData.find(c => c.nik === query || c.air.id === query);
+
+            if (citizen) {
+                currentAirData = citizen;
+                document.getElementById('air-id-display').innerText = citizen.air.id;
+                document.getElementById('air-nama-display').innerText = citizen.nama;
+                document.getElementById('air-meter-awal').innerText = `${citizen.air.meterAwal} m³`;
+                document.getElementById('air-meter-akhir').innerText = `${citizen.air.meterAkhir} m³`;
+                document.getElementById('air-pemakaian').innerText = `${citizen.air.pemakaian} m³`;
+                document.getElementById('air-biaya-pakai').innerText = `Rp ${(citizen.air.pemakaian * 2500).toLocaleString()}`;
+                document.getElementById('air-total-tagihan').innerText = `Rp ${citizen.air.total.toLocaleString()}`;
+
+                document.getElementById('air-result').classList.remove('hidden');
+            } else {
+                showToast("ID Air Tidak Ditemukan", "Gunakan NIK Demo 3201010001", false);
+            }
+        }
+
+        function getAirTotalAmount() {
+            return currentAirData ? currentAirData.air.total : 0;
+        }
+
+        // --- FEATURE 6: BANTUAN SOSIAL (BANSOS) ---
+        function switchBansosSubTab(subTab) {
+            document.getElementById('bansos-sub-daftar').classList.add('hidden');
+            document.getElementById('bansos-sub-statistik').classList.add('hidden');
+            document.getElementById('bansos-sub-pengajuan').classList.add('hidden');
+
+            document.getElementById(`bansos-sub-${subTab}`).classList.remove('hidden');
+
+            document.querySelectorAll('.sub-tab-btn').forEach(b => {
+                b.className = 'sub-tab-btn text-sm text-slate-500 hover:text-slate-800 pb-1 px-3';
+            });
+            document.getElementById(`sub-bansos-${subTab}`).className = 'sub-tab-btn font-bold text-sm text-emerald-700 border-b-2 border-emerald-700 pb-1 px-3';
+        }
+
+        function populateBansosTable() {
+            const tbody = document.getElementById('bansos-table-body');
+            tbody.innerHTML = '';
+
+            citizensData.forEach(c => {
+                if (c.bansos.jenis !== '-') {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3 font-semibold text-slate-800">${c.nama}</td>
+                        <td class="p-3 font-mono text-slate-500">${c.nik}</td>
+                        <td class="p-3">${c.rt} / ${c.rw}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 bg-rose-50 text-rose-700 font-bold rounded">${c.bansos.jenis}</span></td>
+                        <td class="p-3 font-bold text-sky-600">Desil ${c.desil}</td>
+                        <td class="p-3 text-emerald-600 font-semibold">${c.bansos.status}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        function filterBansosTable() {
+            const search = document.getElementById('bansos-filter-input').value.toLowerCase();
+            const jenis = document.getElementById('bansos-filter-jenis').value;
+            const rows = document.querySelectorAll('#bansos-table-body tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const matchesSearch = text.includes(search);
+                const matchesJenis = !jenis || text.includes(jenis.toLowerCase());
+
+                if (matchesSearch && matchesJenis) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function initBansosCharts() {
+            // Chart 1: Jenis Bansos
+            const ctx1 = document.getElementById('chartBansosJenis').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['BLT Desa', 'PKH', 'BPNT'],
+                    datasets: [{
+                        data: [120, 180, 112],
+                        backgroundColor: ['#10b981', '#0284c7', '#f59e0b']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Chart 2: Desil Penerima
+            const ctx2 = document.getElementById('chartBansosDesil').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Desil 1', 'Desil 2', 'Desil 3', 'Desil 4'],
+                    datasets: [{
+                        label: 'Jumlah KPM Penerima',
+                        data: [210, 140, 50, 12],
+                        backgroundColor: '#059669'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function submitPengajuanBansos(e) {
+            e.preventDefault();
+            showToast("Pengajuan Berhasil", "Data pengajuan Anda telah diteruskan ke Pemerintah Desa");
+            e.target.reset();
+        }
+
+        // --- PAYMENT & RECEIPT PROCESSOR ---
+        function openPaymentModal(serviceTitle, amount) {
+            currentPaymentTarget = { title: serviceTitle, amount: amount };
+            document.getElementById('modal-service-title').innerText = serviceTitle;
+            document.getElementById('modal-service-amount').innerText = `Rp ${amount.toLocaleString()}`;
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
+
+        function executeSimulatedPayment() {
+            closePaymentModal();
+            const method = document.querySelector('input[name="pay-method"]:checked').value;
+            const now = new Date();
+            const timestamp = now.toLocaleString('id-ID');
+            const receiptNo = 'TRX-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Populate Receipt
+            document.getElementById('rec-no').innerText = receiptNo;
+            document.getElementById('rec-time').innerText = timestamp;
+            document.getElementById('rec-service').innerText = currentPaymentTarget.title;
+            document.getElementById('rec-nama').innerText = currentPbbData ? currentPbbData.nama : "Warga Desa";
+            document.getElementById('rec-method').innerText = method;
+            document.getElementById('rec-total').innerText = `Rp ${currentPaymentTarget.amount.toLocaleString()}`;
+
+            // Handle PLN Token Generation
+            const tokenRow = document.getElementById('rec-token-row');
+            if (currentPaymentTarget.title.includes('PLN') && activeListrikType === 'token') {
+                const dummyToken = Array.from({length: 4}, () => Math.floor(1000 + Math.random() * 9000)).join('-');
+                document.getElementById('rec-token-val').innerText = dummyToken;
+                tokenRow.classList.remove('hidden');
+            } else {
+                tokenRow.classList.add('hidden');
+            }
+
+            // Update local status if PBB
+            if (currentPbbData && currentPaymentTarget.title.includes('PBB')) {
+                currentPbbData.pbb.status = 'Lunas';
+                document.getElementById('pbb-status-badge').className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                document.getElementById('pbb-status-badge').innerText = 'STATUS: LUNAS';
+                document.getElementById('btn-pay-pbb').classList.add('hidden');
+            }
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+            showToast("Pembayaran Berhasil!", "Transaksi Anda telah diproses dan diverifikasi.");
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+        
+    </script>
+</body>
+</html>
